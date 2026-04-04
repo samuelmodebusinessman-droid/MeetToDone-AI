@@ -244,11 +244,11 @@ export default function MTDPage() {
         {/* Header */}
         <header className="flex flex-col sm:flex-row items-center justify-between py-4 px-4 sm:px-8 max-w-[1100px] mx-auto w-full shrink-0 gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#0F766E] rounded-lg flex items-center justify-center overflow-hidden">
+            <div className="w-11 h-11 bg-white rounded-lg flex items-center justify-center overflow-hidden border border-[#0F766E]/20 shadow-sm">
               <img 
                 src="https://i.ibb.co/Swj35cKw/M-removebg-preview.png" 
                 alt="MeetToDone Logo" 
-                className="w-7 h-7 object-contain"
+                className="w-9 h-9 object-contain"
               />
             </div>
             <div className="flex flex-col">
