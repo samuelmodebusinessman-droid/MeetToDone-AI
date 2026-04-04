@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Selector - Puter.js</title>
+    <script src="https://js.puter.com/v2/"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Toggle View Buttons */
+        .view-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .view-btn {
+            padding: 10px 20px;
+            border: 2px solid white;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .view-btn.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .view-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Main Card */
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+
+        /* Simple View (Dropdown) */
+        .simple-view {
+            display: none;
+        }
+
+        .simple-view.active {
+            display: block;
+        }
+
+        .model-select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .model-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Advanced View (Grid) */
+        .advanced-view {
+            display: none;
+        }
+
+        .advanced-view.active {
+            display: block;
+        }
+
+        .provider-section {
+            margin-bottom: 25px;
+        }
+
+        .provider-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .provider-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .provider-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Model Cards Grid */
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .model-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .model-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .model-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .model-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .model-info {
+            flex: 1;
+        }
+
+        .model-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .model-desc {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.3;
+        }
+
+        /* Provider Colors */
+        .anthropic { background: #e8f5e9; color: #2e7d32; }
+        .openai { background: #e3f2fd; color: #1565c0; }
+        .google { background: #fff3e0; color: #e65100; }
+        .xai { background: #f3e5f5; color: #6a1b9a; }
+        .deepseek { background: #e8eaf6; color: #283593; }
+        .mistral { background: #fce4ec; color: #c2185b; }
+        .meta { background: #e0f2f1; color: #00695c; }
+        .alibaba { background: #fff8e1; color: #f57f17; }
+
+        /* Prompt Section */
+        .prompt-section {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prompt-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .prompt-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Options Bar */
+        .options-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .streaming-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #e0e0e0;
+            border-radius: 13px;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #667eea;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(24px);
+        }
+
+        /* Analyze Button */
+        .analyze-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .analyze-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .analyze-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* Response Section */
+        .response-section {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .response-box {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 200px;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .response-box.streaming {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+
+        /* Loading Indicator */
+        .loading {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        .loading-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .loading-dots span {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Error Message */
+        .error-msg {
+            display: none;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .error-msg.active {
+            display: block;
+        }
+
+        /* Model Badge */
+        .model-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Clear Button */
+        .clear-btn {
+            padding: 8px 16px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .clear-btn:hover {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .models-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .options-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .analyze-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Icons styling */
+        .icon-claude::before { content: "🟢"; }
+        .icon-openai::before { content: "🤖"; }
+        .icon-gemini::before { content: "💎"; }
+        .icon-grok::before { content: "🚀"; }
+        .icon-deepseek::before { content: "🔮"; }
+        .icon-mistral::before { content: "🌊"; }
+        .icon-llama::before { content: "🦙"; }
+        .icon-qwen::before { content: "⚡"; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-robot"></i> AI Model Selector</h1>
+            <p>Choisissez votre modèle d'IA et commencez à analyser avec Puter.js</p>
+        </header>
+
+        <div class="view-toggle">
+            <button class="view-btn active" onclick="switchView('simple')">
+                <i class="fas fa-list"></i> Version Simple
+            </button>
+            <button class="view-btn" onclick="switchView('advanced')">
+                <i class="fas fa-th-large"></i> Version Avancée
+            </button>
+        </div>
+
+        <div class="main-card">
+            <!-- Advanced View (Grid) - Caché par défaut -->
+            <div class="advanced-view" id="advancedView" style="display: none;">
+                <!-- Anthropic -->
+                <div class="provider-section">
+                    <div class="provider-header">
+                        <div class="provider-icon anthropic"><i class="fas fa-feather-alt"></i></div>
+                        <span class="provider-name">Anthropic - Claude</span>
+                    </div>
+                    <div class="models-grid">
+
+                <!-- OpenAI -->
+                <div class="provider-section">
+                    <div class="provider-header">
+                        <div class="provider-icon openai"><i class="fas fa-brain"></i></div>
+                        <span class="provider-name">OpenAI - GPT</span>
+                    </div>
+                    <div class="models-grid">
+                        <div class="model-card" data-model="gpt-5.4" onclick="selectModel('gpt-5.4')">
+                            <div class="model-icon openai icon-openai"></div>
+                            <div class="model-info">
+                                <div class="model-name">GPT-5.4</div>
+                                <div class="model-desc">Dernière version, multimodal et puissante</div>
+                            </div>
+                        </div>
+                        <div class="model-card" data-model="gpt-4o" onclick="selectModel('gpt-4o')">
+                            <div class="model-icon openai icon-openai"></div>
+                            <div class="model-info">
+                                <div class="model-name">GPT-4o</div>
+                                <div class="model-desc">Multimodal natif, excellent en vision</div>
+                            </div>
+                        </div>
+                        <div class="model-card" data-model="gpt-4o-mini" onclick="selectModel('gpt-4o-mini')">
+                            <div class="model-icon openai icon-openai"></div>
+                            <div class="model-info">
+                                <div class="model-name">GPT-4o Mini</div>
+                                <div class="model-desc">Version économique et rapide</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Google -->
+                <div class="provider-section">
+                    <div class="provider-header">
+                        <div class="provider-icon google"><i class="fas fa-gem"></i></div>
+                        <span class="provider-name">Google - Gemini</span>
+                    </div>
+                    <div class="models-grid">
+                        <div class="model-card" data-model="gemini-2.5-pro" onclick="selectModel('gemini-2.5-pro')">
+                            <div class="model-icon google icon-gemini"></div>
+                            <div class="model-info">
+                                <div class="model-name">Gemini 2.5 Pro</div>
+                                <div class="model-desc">Modèle multimodal puissant avec grand contexte</div>
+                            </div>
+                        </div>
+                        <div class="model-card" data-model="gemini-2.5-flash" onclick="selectModel('gemini-2.5-flash')">
+                            <div class="model-icon google icon-gemini"></div>
+                            <div class="model-info">
+                                <div class="model-name">Gemini 2.5 Flash</div>
+                                <div class="model-desc">Version rapide pour les tâches quotidiennes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- xAI -->
+                <div class="provider-section">
+                    <div class="provider-header">
+                        <div class="provider-icon xai"><i class="fas fa-rocket"></i></div>
+                        <span class="provider-name">xAI - Grok</span>
+                    </div>
+                    <div class="models-grid">
+                        <div class="model-card" data-model="grok-4.20" onclick="selectModel('grok-4.20')">
+                            <div class="model-icon xai icon-grok"></div>
+                            <div class="model-info">
+                                <div class="model-name">Grok 4.20</div>
+                                <div class="model-desc">Dernière version avec accès temps réel</div>
+                            </div>
+                        </div>
+                        <div class="model-card" data-model="grok-3" onclick="selectModel('grok-3')">
+                            <div class="model-icon xai icon-grok"></div>
+                            <div class="model-info">
+                                <div class="model-name">Grok 3</div>
+                                <div class="model-desc">Standard avec excellent raisonnement</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DeepSeek -->
+                <div class="provider-section">
+                    <div class="provider-header">
+                        <div class="provider-icon deepseek"><i class="fas fa-search"></i></div>
+                        <span class="provider-name">DeepSeek</span>
+                    </div>
+                    <div class="models-grid">
+                        <div class="model-card" data-model="deepseek-r1" onclick="selectModel('deepseek-r1')">
+                            <div class="model-icon deepseek icon-deepseek"></div>
+                            <div class="model-info">
+                                <div class="model-name">DeepSeek R1</div>
+                                <div class="model-desc">Spécialisé en raisonnement profond</div>
+                            </div>
+                        </div>
+                        <div class="model-card" data-model="deepseek-chat" onclick="selectModel('deepseek-chat')">
+                            <div class="model-icon deepseek icon-deepseek"></div>
+                            <div class="model-info">
+                                <div class="model-name">DeepSeek Chat</div>
+                                <div class="model-desc">Optimisé pour les conversations</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mistral -->
+                <div class="provider-section">
+                    <div class="provider-header">
+                        <div class="provider-icon mistral"><i class="fas fa-wind"></i></div>
+                        <span class="provider-name">Mistral</span>
+                    </div>
+                    <div class="models-grid">
+                        <div class="model-card" data-model="mistral-large" onclick="selectModel('mistral-large')">
+                            <div class="model-icon mistral icon-mistral"></div>
+                            <div class="model-info">
+                                <div class="model-name">Mistral Large</div>
+                                <div class="model-desc">Modèle européen puissant et polyvalent</div>
+                            </div>
+                        </div>
+                        <div class="model-card" data-model="mistral-medium" onclick="selectModel('mistral-medium')">
+                            <div class="model-icon mistral icon-mistral"></div>
+                            <div class="model-info">
+                                <div class="model-name">Mistral Medium</div>
+                                <div class="model-desc">Équilibre performance/coût</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meta -->
+                <div class="provider-section">
+                    <div class="provider-header">
+                        <div class="provider-icon meta"><i class="fab fa-meta"></i></div>
+                        <span class="provider-name">Meta - Llama</span>
+                    </div>
+                    <div class="models-grid">
+                        <div class="model-card" data-model="llama-3.1-70b" onclick="selectModel('llama-3.1-70b')">
+                            <div class="model-icon meta icon-llama"></div>
+                            <div class="model-info">
+                                <div class="model-name">Llama 3.1 70B</div>
+                                <div class="model-desc">Open source puissant, 70 milliards de paramètres</div>
+                            </div>
+                        </div>
+                        <div class="model-card" data-model="llama-3.1-8b" onclick="selectModel('llama-3.1-8b')">
+                            <div class="model-icon meta icon-llama"></div>
+                            <div class="model-info">
+                                <div class="model-name">Llama 3.1 8B</div>
+                                <div class="model-desc">Version légère et rapide</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alibaba -->
+                <div class="provider-section">
+                    <div class="provider-header">
+                        <div class="provider-icon alibaba"><i class="fas fa-bolt"></i></div>
+                        <span class="provider-name">Alibaba - Qwen</span>
+                    </div>
+                    <div class="models-grid">
+                        <div class="model-card" data-model="qwen-2.5-72b" onclick="selectModel('qwen-2.5-72b')">
+                            <div class="model-icon alibaba icon-qwen"></div>
+                            <div class="model-info">
+                                <div class="model-name">Qwen 2.5 72B</div>
+                                <div class="model-desc">Modèle chinois avancé, 72B paramètres</div>
+                            </div>
+                        </div>
+                        <div class="model-card" data-model="qwen-2.5-7b" onclick="selectModel('qwen-2.5-7b')">
+                            <div class="model-icon alibaba icon-qwen"></div>
+                            <div class="model-info">
+                                <div class="model-name">Qwen 2.5 7B</div>
+                                <div class="model-desc">Version efficace et rapide</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prompt Section -->
+            <div class="prompt-section">
+                <label class="section-title">
+                    <i class="fas fa-pen"></i> Votre prompt
+                </label>
+                <textarea 
+                    class="prompt-textarea" 
+                    id="promptInput" 
+                    placeholder="Écrivez votre texte à analyser ici... Ex: Résume ce compte-rendu de réunion, explique ce code, traduis ce texte..."
+                ></textarea>
+                
+                <div class="options-bar">
+                    <!-- Sélecteur de modèle à côté du bouton -->
+                    <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                        <select class="model-select" id="simpleModelSelect" onchange="selectModel(this.value)" style="max-width: 250px; margin-bottom: 0;">
+                            <option value="">-- Choisir un modèle --</option>
+                            <optgroup label="Anthropic - Claude">
+                                <option value="claude-opus-4-6">Claude Opus 4.6</option>
+                                <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+                                <option value="claude-3-5-sonnet">Claude 3.5 Sonnet</option>
+                            </optgroup>
+                            <optgroup label="OpenAI - GPT">
+                                <option value="gpt-5.4">GPT-5.4</option>
+                                <option value="gpt-4o">GPT-4o</option>
+                                <option value="gpt-4o-mini">GPT-4o Mini</option>
+                            </optgroup>
+                            <optgroup label="Google - Gemini">
+                                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                                <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                            </optgroup>
+                            <optgroup label="xAI - Grok">
+                                <option value="grok-4.20">Grok 4.20</option>
+                                <option value="grok-3">Grok 3</option>
+                            </optgroup>
+                            <optgroup label="DeepSeek">
+                                <option value="deepseek-r1">DeepSeek R1</option>
+                                <option value="deepseek-chat">DeepSeek Chat</option>
+                            </optgroup>
+                            <optgroup label="Mistral">
+                                <option value="mistral-large">Mistral Large</option>
+                                <option value="mistral-medium">Mistral Medium</option>
+                            </optgroup>
+                            <optgroup label="Meta - Llama">
+                                <option value="llama-3.1-70b">Llama 3.1 70B</option>
+                                <option value="llama-3.1-8b">Llama 3.1 8B</option>
+                            </optgroup>
+                            <optgroup label="Alibaba - Qwen">
+                                <option value="qwen-2.5-72b">Qwen 2.5 72B</option>
+                                <option value="qwen-2.5-7b">Qwen 2.5 7B</option>
+                            </optgroup>
+                        </select>
+                        
+                        <button class="analyze-btn" id="analyzeBtn" onclick="analyze()">
+                            <i class="fas fa-magic"></i>
+                            <span>Analyser</span>
+                        </button>
+                    </div>
+                    
+                    <label class="streaming-toggle" onclick="toggleStreaming()">
+                        <span>Streaming</span>
+                        <div class="toggle-switch" id="streamingToggle">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="error-msg" id="errorMsg"></div>
+            </div>
+
+            <!-- Response Section -->
+            <div class="response-section" id="responseSection" style="display: none;">
+                <div class="response-header">
+                    <div>
+                        <span class="section-title" style="margin: 0;">
+                            <i class="fas fa-comment-dots"></i> Réponse
+                        </span>
+                        <span class="model-badge" id="responseModelBadge" style="margin-top: 8px; display: none;">
+                            <i class="fas fa-robot"></i>
+                            <span id="responseModelName"></span>
+                        </span>
+                    </div>
+                    <button class="clear-btn" onclick="clearResponse()">
+                        <i class="fas fa-trash"></i> Effacer
+                    </button>
+                </div>
+                
+                <div class="loading" id="loadingIndicator">
+                    <div class="loading-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span>L'IA réfléchit...</span>
+                </div>
+                
+                <div class="response-box" id="responseBox">
+                    <div class="empty-state">
+                        <i class="fas fa-robot"></i>
+                        <p>La réponse apparaîtra ici</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // État de l'application
+        let selectedModel = '';
+        let isStreaming = false;
+        let isAnalyzing = false;
+
+        // Mapping des noms de modèles pour l'affichage
+        const modelDisplayNames = {
+            'claude-opus-4-6': 'Claude Opus 4.6',
+            'claude-sonnet-4-6': 'Claude Sonnet 4.6',
+            'claude-3-5-sonnet': 'Claude 3.5 Sonnet',
+            'gpt-5.4': 'GPT-5.4',
+            'gpt-4o': 'GPT-4o',
+            'gpt-4o-mini': 'GPT-4o Mini',
+            'gemini-2.5-pro': 'Gemini 2.5 Pro',
+            'gemini-2.5-flash': 'Gemini 2.5 Flash',
+            'grok-4.20': 'Grok 4.20',
+            'grok-3': 'Grok 3',
+            'deepseek-r1': 'DeepSeek R1',
+            'deepseek-chat': 'DeepSeek Chat',
+            'mistral-large': 'Mistral Large',
+            'mistral-medium': 'Mistral Medium',
+            'llama-3.1-70b': 'Llama 3.1 70B',
+            'llama-3.1-8b': 'Llama 3.1 8B',
+            'qwen-2.5-72b': 'Qwen 2.5 72B',
+            'qwen-2.5-7b': 'Qwen 2.5 7B'
+        };
+
+        // Changer de vue (simple/avancée)
+        function switchView(view) {
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const modelSelect = document.getElementById('simpleModelSelect');
+            const advancedView = document.getElementById('advancedView');
+            
+            if (view === 'simple') {
+                // Mode simple : cacher la grille, le select est déjà dans la barre
+                advancedView.style.display = 'none';
+                modelSelect.style.display = 'block';
+            } else {
+                // Mode avancé : afficher la grille
+                advancedView.style.display = 'block';
+                // Mettre à jour les cartes
+                document.querySelectorAll('.model-card').forEach(card => {
+                    card.classList.remove('selected');
+                    if (card.dataset.model === selectedModel) {
+                        card.classList.add('selected');
+                    }
+                });
+            }
+        }
+
+        // Sélectionner un modèle
+        function selectModel(modelId) {
+            selectedModel = modelId;
+            
+            // Mettre à jour les cartes
+            document.querySelectorAll('.model-card').forEach(card => {
+                card.classList.remove('selected');
+                if (card.dataset.model === modelId) {
+                    card.classList.add('selected');
+                }
+            });
+            
+            // Mettre à jour le select
+            document.getElementById('simpleModelSelect').value = modelId;
+            
+            // Activer le bouton
+            updateAnalyzeButton();
+        }
+
+        // Toggle streaming
+        function toggleStreaming() {
+            isStreaming = !isStreaming;
+            document.getElementById('streamingToggle').classList.toggle('active', isStreaming);
+        }
+
+        // Mettre à jour le bouton d'analyse
+        function updateAnalyzeButton() {
+            const btn = document.getElementById('analyzeBtn');
+            const prompt = document.getElementById('promptInput').value.trim();
+            
+            if (selectedModel && prompt && !isAnalyzing) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = !selectedModel || !prompt;
+            }
+        }
+
+        // Écouter les changements dans le textarea
+        document.getElementById('promptInput').addEventListener('input', updateAnalyzeButton);
+
+        // Fonction d'analyse
+        async function analyze() {
+            const prompt = document.getElementById('promptInput').value.trim();
+            
+            if (!selectedModel || !prompt || isAnalyzing) return;
+
+            isAnalyzing = true;
+            updateAnalyzeButton();
+            
+            // Afficher la section réponse
+            document.getElementById('responseSection').style.display = 'block';
+            document.getElementById('loadingIndicator').classList.add('active');
+            document.getElementById('responseBox').innerHTML = '';
+            document.getElementById('errorMsg').classList.remove('active');
+            
+            // Afficher le badge du modèle
+            const displayName = modelDisplayNames[selectedModel] || selectedModel;
+            document.getElementById('responseModelName').textContent = displayName;
+            document.getElementById('responseModelBadge').style.display = 'inline-flex';
+
+            try {
+                // Vérifier Puter.js
+                if (typeof window.puter === 'undefined') {
+                    throw new Error("Puter.js n'est pas encore chargé. Veuillez patienter...");
+                }
+
+                const puter = window.puter;
+                
+                if (isStreaming) {
+                    // Version streaming
+                    await analyzeWithStreaming(puter, prompt);
+                } else {
+                    // Version sans streaming
+                    await analyzeWithoutStreaming(puter, prompt);
+                }
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('errorMsg').textContent = 
+                    'Erreur: ' + (error.message || "Une erreur est survenue");
+                document.getElementById('errorMsg').classList.add('active');
+                document.getElementById('responseBox').innerHTML = 
+                    '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Erreur lors de l\'analyse</p></div>';
+            } finally {
+                isAnalyzing = false;
+                updateAnalyzeButton();
+                document.getElementById('loadingIndicator').classList.remove('active');
+            }
+        }
+
+        // Analyse sans streaming
+        async function analyzeWithoutStreaming(puter, prompt) {
+            const responseBox = document.getElementById('responseBox');
+            
+            const response = await puter.ai.chat(prompt, {
+                model: selectedModel
+            });
+
+            const content = response?.message?.content || response?.text || response;
+            
+            if (!content) {
+                throw new Error("Réponse vide de l'IA");
+            }
+
+            responseBox.textContent = content;
+        }
+
+        // Analyse avec streaming
+        async function analyzeWithStreaming(puter, prompt) {
+            const responseBox = document.getElementById('responseBox');
+            responseBox.classList.add('streaming');
+            responseBox.textContent = '';
+
+            try {
+                const stream = await puter.ai.chat(prompt, {
+                    model: selectedModel,
+                    stream: true
+                });
+
+                for await (const chunk of stream) {
+                    const content = chunk?.message?.content || chunk?.text || chunk;
+                    if (content) {
+                        responseBox.textContent += content;
+                        responseBox.scrollTop = responseBox.scrollHeight;
+                    }
+                }
+            } finally {
+                responseBox.classList.remove('streaming');
+            }
+        }
+
+        // Effacer la réponse
+        function clearResponse() {
+            document.getElementById('responseBox').innerHTML = 
+                '<div class="empty-state"><i class="fas fa-robot"></i><p>La réponse apparaîtra ici</p></div>';
+            document.getElementById('responseModelBadge').style.display = 'none';
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAnalyzeButton();
+            
+            // Vérifier si Puter.js est chargé
+            if (typeof window.puter !== 'undefined') {
+                console.log('Puter.js est prêt');
+            } else {
+                console.log('En attente de Puter.js...');
+                // Attendre que Puter.js se charge
+                const checkPuter = setInterval(() => {
+                    if (typeof window.puter !== 'undefined') {
+                        console.log('Puter.js est maintenant prêt');
+                        clearInterval(checkPuter);
+                    }
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
