@@ -246,7 +246,7 @@ export default function MTDPage() {
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-[#0F766E] rounded-lg flex items-center justify-center overflow-hidden">
               <img 
-                src="https://i.imgur.com/R7owpdc.png" 
+                src="https://i.ibb.co/Swj35cKw/M-removebg-preview.png" 
                 alt="MeetToDone Logo" 
                 className="w-7 h-7 object-contain"
               />
@@ -348,6 +348,10 @@ export default function MTDPage() {
               onExportTXT={handleExportTXT}
               onExportCSV={handleExportCSV}
               onExportPDF={handleExportPDF}
+              onSendSlack={handleSendSlack}
+              onSendGmail={handleSendGmail}
+              sendingToSlack={sendingToSlack}
+              sendingToGmail={sendingToGmail}
             />
           </div>
         </main>
