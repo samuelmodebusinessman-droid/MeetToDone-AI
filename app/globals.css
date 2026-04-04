@@ -15,6 +15,25 @@ body {
   background-color: var(--beige);
   min-height: 100vh;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  body {
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
 }
 
 /* Animation pour les notifications */

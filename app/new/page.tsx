@@ -243,9 +243,9 @@ export default function MTDPage() {
 
   return (
     <>
-      <div className="h-screen bg-[#FAF4EB] flex flex-col overflow-hidden">
+      <div className="min-h-screen bg-[#FAF4EB] flex flex-col overflow-y-auto overflow-x-hidden">
         {/* Header */}
-        <header className="flex items-center justify-between py-4 px-8 max-w-[1100px] mx-auto w-full shrink-0">
+        <header className="flex flex-col sm:flex-row items-center justify-between py-4 px-4 sm:px-8 max-w-[1100px] mx-auto w-full shrink-0 gap-3">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-[#0F766E] rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-base">MTD</span>
@@ -256,28 +256,29 @@ export default function MTDPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-3">
             <TokenDisplay />
             <button 
               onClick={handleReset}
-              className="text-[#0F766E]/60 hover:text-[#0F766E] text-[11px] font-medium transition-colors"
+              className="text-[#0F766E]/60 hover:text-[#0F766E] text-[10px] sm:text-[11px] font-medium transition-colors"
               title="Réinitialiser tout"
             >
               Reset
             </button>
-            <button className="flex items-center gap-2 bg-[#F59E0B] text-white font-semibold px-4 py-2 rounded-full cursor-pointer hover:bg-[#D97706] transition-colors text-sm">
-              <Plus className="w-4 h-4" />
-              <span>Nouvelle réunion</span>
+            <button className="flex items-center gap-1 sm:gap-2 bg-[#F59E0B] text-white font-semibold px-3 sm:px-4 py-2 rounded-full cursor-pointer hover:bg-[#D97706] transition-colors text-xs sm:text-sm">
+              <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Nouvelle réunion</span>
+              <span className="sm:hidden">Nouveau</span>
             </button>
-            <button className="w-9 h-9 bg-[#0F766E] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#134E4A] transition-colors">
-              <User className="w-4 h-4 text-white" />
+            <button className="w-8 h-8 sm:w-9 sm:h-9 bg-[#0F766E] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#134E4A] transition-colors">
+              <User className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
             </button>
           </div>
         </header>
 
         {/* Main Grid */}
-        <main className="flex-1 px-6 pb-4 max-w-[1200px] mx-auto w-full flex flex-col justify-center">
-          <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-5 w-full" style={{ maxWidth: '1150px', margin: '0 auto' }}>
+        <main className="flex-1 px-4 sm:px-6 pb-4 max-w-[1200px] mx-auto w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-4 sm:gap-5 w-full" style={{ maxWidth: '1150px', margin: '0 auto' }}>
             
             {/* Panel Historique & Config - À gauche */}
             <HistoryPanel
@@ -305,8 +306,8 @@ export default function MTDPage() {
               onSendGmail={handleSendGmail}
             />
 
-            {/* Conteneur pour InputPanel et ResultsPanel collés */}
-            <div className="flex gap-0">
+            {/* Conteneur pour InputPanel et ResultsPanel - Responsive */}
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-0">
               {/* Panel Entrée */}
               <InputPanel
                 textContent={textContent}
