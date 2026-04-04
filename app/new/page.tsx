@@ -16,11 +16,9 @@ import { useAnalysis } from "./hooks/useAnalysis";
 import { useTokenSystem } from "./hooks/useTokenSystem";
 
 // Components
-import { InputPanel } from "./components/InputPanel";
-import { ResultsPanel } from "./components/ResultsPanel";
+import { AnalysisPanel } from "./components/AnalysisPanel";
 import { HistoryPanel } from "./components/HistoryPanel";
 import { ErrorToast } from "./components/ErrorToast";
-import { AnalysisModeSelector } from "./components/AnalysisModeSelector";
 import { TokenDisplay } from "./components/TokenDisplay";
 
 // Utils
@@ -46,7 +44,6 @@ export default function MTDPage() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [showExportDropdown, setShowExportDropdown] = useState(false);
   
   // États pour Slack
   const [slackWebhookUrl, setSlackWebhookUrl] = useState("");
@@ -172,23 +169,23 @@ export default function MTDPage() {
 
   // Export handlers
   const handleExportPDF = useCallback(() => {
-    if (analysisResult) exportToPDF(analysisResult, setShowExportDropdown);
+    if (analysisResult) exportToPDF(analysisResult, () => {});
   }, [analysisResult]);
 
   const handleExportDOCX = useCallback(() => {
-    if (analysisResult) exportToDOCX(analysisResult, setShowExportDropdown);
+    if (analysisResult) exportToDOCX(analysisResult, () => {});
   }, [analysisResult]);
 
   const handleExportTXT = useCallback(() => {
-    if (analysisResult) exportToTXT(analysisResult, setShowExportDropdown);
+    if (analysisResult) exportToTXT(analysisResult, () => {});
   }, [analysisResult]);
 
   const handleExportCSV = useCallback(() => {
-    if (analysisResult) exportToCSV(analysisResult, setShowExportDropdown);
+    if (analysisResult) exportToCSV(analysisResult, () => {});
   }, [analysisResult]);
 
   const handleExportXLS = useCallback(() => {
-    if (analysisResult) exportToXLS(analysisResult, setShowExportDropdown);
+    if (analysisResult) exportToXLS(analysisResult, () => {});
   }, [analysisResult]);
 
   // Copy handler
@@ -247,8 +244,12 @@ export default function MTDPage() {
         {/* Header */}
         <header className="flex flex-col sm:flex-row items-center justify-between py-4 px-4 sm:px-8 max-w-[1100px] mx-auto w-full shrink-0 gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#0F766E] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-base">MTD</span>
+            <div className="w-9 h-9 bg-[#0F766E] rounded-lg flex items-center justify-center overflow-hidden">
+              <img 
+                src="https://i.imgur.com/R7owpdc.png" 
+                alt="MeetToDone Logo" 
+                className="w-7 h-7 object-contain"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-[#134E4A] font-bold text-base">MeetToDone</span>
@@ -306,61 +307,48 @@ export default function MTDPage() {
               onSendGmail={handleSendGmail}
             />
 
-            {/* Conteneur pour InputPanel et ResultsPanel - Responsive */}
-            <div className="flex flex-col lg:flex-row gap-4 lg:gap-0">
-              {/* Panel Entrée */}
-              <InputPanel
-                textContent={textContent}
-                setTextContent={setTextContent}
-                setError={setError}
-                referenceFiles={referenceFiles}
-                MAX_REF_FILES={MAX_REF_FILES}
-                isDraggingRef={isDraggingRef}
-                setIsDraggingRef={setIsDraggingRef}
-                handleReferenceFileUpload={handleReferenceFileUpload}
-                removeReferenceFile={removeReferenceFile}
-                openRefFileSelector={openRefFileSelector}
-                refFileInputRef={refFileInputRef}
-                isListening={isListening}
-                toggleListening={toggleListening}
-                openCamera={openCamera}
-                uploadedFiles={uploadedFiles}
-                imagePreviews={imagePreviews}
-                isExtracting={isExtracting}
-                MAX_FILES={MAX_FILES}
-                isDragging={isDragging}
-                setIsDragging={setIsDragging}
-                handleFileUpload={handleFileUpload}
-                removeFile={removeFile}
-                openFileSelector={openFileSelector}
-                fileInputRef={fileInputRef}
-                showAnalyserButton={showAnalyserButton}
-                selectedModel={selectedModel}
-                setSelectedModel={setSelectedModel}
-                analysisMode={analysisMode}
-                setAnalysisMode={setAnalysisMode}
-                isAnalyzing={isAnalyzing}
-                handleAnalyze={handleAnalyzeClick}
-              />
-
-              {/* Panel Résultats */}
-              <ResultsPanel
-                analysisResult={analysisResult}
-                copied={copied}
-                sendingToSlack={sendingToSlack}
-                sendingToGmail={sendingToGmail}
-                showExportDropdown={showExportDropdown}
-                setShowExportDropdown={setShowExportDropdown}
-                onCopy={handleCopy}
-                onSendSlack={handleSendSlack}
-                onSendGmail={handleSendGmail}
-                onExportXLS={handleExportXLS}
-                onExportDOCX={handleExportDOCX}
-                onExportTXT={handleExportTXT}
-                onExportCSV={handleExportCSV}
-                onExportPDF={handleExportPDF}
-              />
-            </div>
+            {/* Panel d'analyse fusionné (Saisie + Résultats) */}
+            <AnalysisPanel
+              textContent={textContent}
+              setTextContent={setTextContent}
+              setError={setError}
+              referenceFiles={referenceFiles}
+              MAX_REF_FILES={MAX_REF_FILES}
+              isDraggingRef={isDraggingRef}
+              setIsDraggingRef={setIsDraggingRef}
+              handleReferenceFileUpload={handleReferenceFileUpload}
+              removeReferenceFile={removeReferenceFile}
+              openRefFileSelector={openRefFileSelector}
+              refFileInputRef={refFileInputRef}
+              isListening={isListening}
+              toggleListening={toggleListening}
+              openCamera={openCamera}
+              uploadedFiles={uploadedFiles}
+              imagePreviews={imagePreviews}
+              isExtracting={isExtracting}
+              MAX_FILES={MAX_FILES}
+              isDragging={isDragging}
+              setIsDragging={setIsDragging}
+              handleFileUpload={handleFileUpload}
+              removeFile={removeFile}
+              openFileSelector={openFileSelector}
+              fileInputRef={fileInputRef}
+              showAnalyserButton={showAnalyserButton}
+              selectedModel={selectedModel}
+              isAnalyzing={isAnalyzing}
+              handleAnalyze={handleAnalyzeClick}
+              setSelectedModel={setSelectedModel}
+              analysisMode={analysisMode}
+              setAnalysisMode={setAnalysisMode}
+              analysisResult={analysisResult}
+              copied={copied}
+              onCopy={handleCopy}
+              onExportXLS={handleExportXLS}
+              onExportDOCX={handleExportDOCX}
+              onExportTXT={handleExportTXT}
+              onExportCSV={handleExportCSV}
+              onExportPDF={handleExportPDF}
+            />
           </div>
         </main>
 
