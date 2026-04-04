@@ -97,6 +97,22 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
     <div className="bg-white border-[2px] border-[#0F766E] rounded-[16px] p-5 flex flex-col shadow-sm flex-1 min-h-[500px]">
       <div className="flex items-center gap-2 mb-4 border-b border-[#0F766E]/10 pb-3">
         <button
+          onClick={() => setActiveTab('results')}
+          className={`px-4 py-2 rounded-lg font-semibold text-sm transition-colors ${
+            activeTab === 'results'
+              ? 'bg-[#0F766E] text-white'
+              : 'bg-[#0F766E]/10 text-[#0F766E] hover:bg-[#0F766E]/20'
+          }`}
+        >
+          <span className="flex items-center gap-2">
+            <BarChart3 className="w-4 h-4" />
+            Analyse
+            {analysisResult && (
+              <span className="w-2 h-2 bg-green-400 rounded-full ml-1"></span>
+            )}
+          </span>
+        </button>
+        <button
           onClick={() => setActiveTab('input')}
           className={`px-4 py-2 rounded-lg font-semibold text-sm transition-colors ${
             activeTab === 'input'
@@ -107,22 +123,6 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
           <span className="flex items-center gap-2">
             <Bot className="w-4 h-4" />
             Saisie
-          </span>
-        </button>
-        <button
-          onClick={() => setActiveTab('results')}
-          className={`px-4 py-2 rounded-lg font-semibold text-sm transition-colors ${
-            activeTab === 'results'
-              ? 'bg-[#0F766E] text-white'
-              : 'bg-[#0F766E]/10 text-[#0F766E] hover:bg-[#0F766E]/20'
-          }`}
-        >
-          <span className="flex items-center gap-2">
-            <BarChart3 className="w-4 h-4" />
-            Résultats
-            {analysisResult && (
-              <span className="w-2 h-2 bg-green-400 rounded-full ml-1"></span>
-            )}
           </span>
         </button>
       </div>
