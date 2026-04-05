@@ -80,7 +80,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
             
             {/* Dropdown Configuration */}
             {showConfig && (
-              <div className="absolute top-full left-0 mt-2 w-[280px] bg-white rounded-[12px] shadow-xl border border-[#0F766E]/20 p-4 z-50">
+              <div className="absolute top-full right-0 mt-2 w-[280px] bg-white rounded-[12px] shadow-xl border border-[#0F766E]/20 p-4 z-50">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-[#134E4A] font-semibold text-[13px]">Configuration</h3>
                   <button
@@ -234,7 +234,12 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
                 
                 <button
                   onClick={onSaveAnalysis}
-                  className="w-full h-[32px] bg-[#0F766E] text-white text-[11px] font-medium rounded-[6px] hover:bg-[#134E4A] transition-colors flex items-center justify-center gap-2"
+                  disabled={!saveTitle.trim()}
+                  className={`w-full h-[32px] text-white text-[11px] font-medium rounded-[6px] transition-colors flex items-center justify-center gap-2 ${
+                    saveTitle.trim() 
+                      ? 'bg-[#0F766E] hover:bg-[#134E4A]' 
+                      : 'bg-[#0F766E]/40 cursor-not-allowed'
+                  }`}
                 >
                   <img 
                     src="https://img.icons8.com/?size=100&id=11240&format=png&color=FFFFFF" 
@@ -243,6 +248,11 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
                   />
                   Enregistrer
                 </button>
+                {!saveTitle.trim() && (
+                  <p className="text-[#0F766E]/60 text-[9px] text-center">
+                    Entrez un titre pour sauvegarder
+                  </p>
+                )}
               </div>
             </div>
           )}
