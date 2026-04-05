@@ -92,21 +92,11 @@ export const useCloudSavedAnalyses = (
 
     setIsLoading(true)
     
-    // Créer le profil s'il n'existe pas (pour éviter l'erreur foreign key)
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .upsert({ 
-        id: user.id,
-        email: user.email,
-        updated_at: new Date().toISOString()
-      }, { 
-        onConflict: 'id',
-        ignoreDuplicates: true 
-      })
-    
-    if (profileError) {
-      console.error('Error creating profile:', profileError)
-    }
+    // Créer le profil s'il n'existe pas via RPC
+    await supabase.rpc('create_profile_if_not_exists', {
+      user_id: user.id,
+      user_email: user.email
+    })
     
     const date = new Date().toLocaleDateString('fr-FR', {
       day: '2-digit',
