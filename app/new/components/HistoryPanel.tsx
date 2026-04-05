@@ -64,7 +64,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
 
   return (
     <div className="bg-white border-[2px] border-[#0F766E] rounded-[16px] p-5 flex flex-col shadow-sm flex-1 min-h-[380px] max-h-[420px]">
-      <div className="pr-1 flex flex-col h-full overflow-hidden">
+      <div className="pr-1 flex flex-col h-full overflow-visible">
         <div className="flex items-center justify-between mb-1">
           <h2 className="text-[#134E4A] font-bold text-[20px]">Historique</h2>
           
@@ -80,7 +80,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
             
             {/* Dropdown Configuration */}
             {showConfig && (
-              <div className="absolute top-full right-0 mt-2 w-[280px] bg-white rounded-[12px] shadow-xl border border-[#0F766E]/20 p-4 z-50">
+              <div className="absolute top-full right-0 mt-2 w-[280px] bg-white rounded-[12px] shadow-xl border border-[#0F766E]/20 p-4 z-[100]">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-[#134E4A] font-semibold text-[13px]">Configuration</h3>
                   <button

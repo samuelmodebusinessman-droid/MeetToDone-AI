@@ -306,8 +306,8 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
             </div>
           </div>
 
-          {/* Bouton Analyser avec sélecteur de modèle */}
-          <div className="pt-3 border-t border-[#0F766E]/10">
+          {/* Bouton Analyser avec sélecteur de modèle - STICKY BOTTOM */}
+          <div className="pt-3 border-t border-[#0F766E]/10 sticky bottom-0 bg-white z-20 pb-2">
             <div className="flex items-center gap-3">
               <button 
                 onClick={handleAnalyze}
