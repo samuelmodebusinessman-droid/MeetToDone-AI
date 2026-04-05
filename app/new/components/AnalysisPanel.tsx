@@ -100,7 +100,7 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
   return (
     <div className="flex flex-col lg:flex-row gap-4">
       {/* Panel Saisie - Gauche */}
-      <div className="bg-white border-[2px] border-[#0F766E] rounded-[16px] p-5 flex flex-col shadow-sm flex-1 min-h-[500px]">
+      <div className="bg-white border-[2px] border-[#0F766E] rounded-[16px] p-5 flex flex-col shadow-sm flex-1 min-h-[380px] max-h-[420px]">
         <div className="flex items-center gap-2 mb-4 border-b border-[#0F766E]/10 pb-3">
           <Bot className="w-5 h-5 text-[#0F766E]" />
           <h2 className="text-[#134E4A] font-bold text-lg">Saisie</h2>
@@ -358,7 +358,7 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
       </div>
 
       {/* Panel Analyse - Droite */}
-      <div className="bg-white border-[2px] border-[#0F766E] rounded-[16px] p-5 flex flex-col shadow-sm flex-1 min-h-[500px]">
+      <div className="bg-white border-[2px] border-[#0F766E] rounded-[16px] p-5 flex flex-col shadow-sm flex-1 min-h-[380px] max-h-[420px]">
         <div className="flex items-center justify-between mb-4 border-b border-[#0F766E]/10 pb-3">
           <div className="flex items-center gap-2">
             <BarChart3 className="w-5 h-5 text-[#0F766E]" />

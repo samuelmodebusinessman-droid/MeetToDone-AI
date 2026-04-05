@@ -63,7 +63,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
   const predefinedTags = ['Urgent', 'Client', 'Interne', 'Projet', 'Suivi'];
 
   return (
-    <div className="bg-white border-[2px] border-[#0F766E] rounded-[16px] p-5 flex flex-col shadow-sm min-h-[500px]">
+    <div className="bg-white border-[2px] border-[#0F766E] rounded-[16px] p-5 flex flex-col shadow-sm flex-1 min-h-[380px] max-h-[420px]">
       <div className="pr-1 flex flex-col h-full overflow-hidden">
         <div className="flex items-center justify-between mb-1">
           <h2 className="text-[#134E4A] font-bold text-[20px]">Historique</h2>
