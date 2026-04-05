@@ -9,6 +9,11 @@ export const metadata: Metadata = {
   title: "MTD - MeetToDone",
   description: "Transformez vos réunions en actions",
   viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+  icons: {
+    icon: "https://i.ibb.co/Swj35cKw/M-removebg-preview.png",
+    shortcut: "https://i.ibb.co/Swj35cKw/M-removebg-preview.png",
+    apple: "https://i.ibb.co/Swj35cKw/M-removebg-preview.png",
+  },
 };
 
 export default function RootLayout({
