@@ -246,7 +246,7 @@ export default function MTDPage() {
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 bg-white rounded-lg flex items-center justify-center overflow-hidden border border-[#0F766E]/20 shadow-sm">
               <img 
-                src="https://i.ibb.co/XZNTWH6H/M-removebg-preview2.png" 
+                src="https://i.ibb.co/S7xJ8Ncy/Design-sans-titre-removebg-preview.png" 
                 alt="MeetToDone Logo" 
                 className="w-9 h-9 object-contain"
               />

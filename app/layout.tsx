@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   description: "Transformez vos réunions en actions",
   viewport: "width=device-width, initial-scale=1, maximum-scale=1",
   icons: {
-    icon: "https://i.ibb.co/XZNTWH6H/M-removebg-preview2.png",
-    shortcut: "https://i.ibb.co/XZNTWH6H/M-removebg-preview2.png",
-    apple: "https://i.ibb.co/XZNTWH6H/M-removebg-preview2.png",
+    icon: "https://i.ibb.co/S7xJ8Ncy/Design-sans-titre-removebg-preview.png",
+    shortcut: "https://i.ibb.co/S7xJ8Ncy/Design-sans-titre-removebg-preview.png",
+    apple: "https://i.ibb.co/S7xJ8Ncy/Design-sans-titre-removebg-preview.png",
   },
 };
 
