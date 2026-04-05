@@ -365,8 +365,17 @@ export const useAnalysis = (): UseAnalysisReturn => {
         
         parsedResult = JSON.parse(jsonString);
         
-        // Vérifier que le résultat a la structure attendue
-        if (!parsedResult.summary && !parsedResult.mainIntention) {
+        // Vérifier que le résultat a une structure valide selon le mode
+        const hasValidStructure = 
+          parsedResult.summary || 
+          parsedResult.mainIntention ||
+          parsedResult.entities ||
+          parsedResult.themes ||
+          parsedResult.context ||
+          parsedResult.intentions ||
+          parsedResult.analysis;
+        
+        if (!hasValidStructure) {
           throw new Error("Structure de réponse invalide");
         }
       } catch (parseError) {

@@ -92,11 +92,33 @@ export const useCloudSavedAnalyses = (
 
     setIsLoading(true)
     
-    // Créer le profil s'il n'existe pas via RPC
-    await supabase.rpc('create_profile_if_not_exists', {
-      user_id: user.id,
-      user_email: user.email
-    })
+    // Créer le profil s'il n'existe pas - méthode directe avec upsert
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .upsert({ 
+        id: user.id,
+        email: user.email,
+        updated_at: new Date().toISOString()
+      }, { 
+        onConflict: 'id',
+        ignoreDuplicates: false
+      })
+    
+    if (profileError) {
+      console.error('Erreur création profil:', profileError)
+      // Essayer avec RPC comme fallback
+      try {
+        await supabase.rpc('create_profile_if_not_exists', {
+          user_id: user.id,
+          user_email: user.email
+        })
+      } catch (rpcError) {
+        console.error('RPC aussi échoué:', rpcError)
+      }
+    }
+    
+    // Attendre un peu pour s'assurer que le profil est créé
+    await new Promise(resolve => setTimeout(resolve, 500))
     
     const date = new Date().toLocaleDateString('fr-FR', {
       day: '2-digit',

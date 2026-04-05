@@ -21,14 +21,43 @@ export interface GeneralInfo {
 }
 
 export interface AnalysisResult {
-  summary: string;
-  generalInfo: GeneralInfo;
-  keyPoints: string[];
-  decisions: string[];
-  actionItems: ActionItem[];
-  pendingQuestions: string[];
-  otherInfo: string;
+  summary?: string;
+  generalInfo?: GeneralInfo;
+  keyPoints?: string[];
+  decisions?: string[];
+  actionItems?: ActionItem[];
+  pendingQuestions?: string[];
+  otherInfo?: string;
   alertesConformite?: AlertItem[];
+  // Champs pour les autres modes d'analyse
+  mainIntention?: string;
+  secondaryIntentions?: string[];
+  globalSentiment?: string;
+  intensity?: 'Faible' | 'Moyenne' | 'Forte';
+  emotions?: string[];
+  overallTone?: string;
+  entities?: {
+    people: { name: string; role?: string }[];
+    organizations: string[];
+    locations: string[];
+    dates: string[];
+    amounts: string[];
+    products: string[];
+  };
+  themes?: {
+    mainThemes: string[];
+    subThemes: string[];
+    keywords: string[];
+    segments: { title: string; content: string }[];
+  };
+  context?: {
+    relations: string[];
+    implicitReferences: string[];
+    coherence: string;
+    missingContext: string[];
+  };
+  intentions?: any;
+  analysis?: any;
 }
 
 // Type pour les analyses enregistrées dans l'historique
