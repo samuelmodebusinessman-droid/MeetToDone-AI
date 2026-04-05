@@ -74,7 +74,7 @@ export const AnalysisModeSelector: React.FC<AnalysisModeSelectorProps> = ({
   onSelectMode
 }) => {
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
+    <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-1">
       {modes.map((mode) => {
         const Icon = mode.icon;
         return (

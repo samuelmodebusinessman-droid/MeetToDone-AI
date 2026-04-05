@@ -345,11 +345,28 @@ export const useAnalysis = (): UseAnalysisReturn => {
       // Parser la réponse JSON
       let parsedResult: AnalysisResult;
       try {
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        const jsonString = jsonMatch ? jsonMatch[0] : content;
+        // Essayer d'extraire JSON entre backticks d'abord (```json ... ```)
+        let jsonString = '';
+        const codeBlockMatch = content.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+        if (codeBlockMatch) {
+          jsonString = codeBlockMatch[1].trim();
+        } else {
+          // Sinon chercher le premier { et le dernier }
+          const firstBrace = content.indexOf('{');
+          const lastBrace = content.lastIndexOf('}');
+          if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+            jsonString = content.substring(firstBrace, lastBrace + 1);
+          }
+        }
+        
+        if (!jsonString) {
+          throw new Error("Aucun JSON trouvé dans la réponse");
+        }
+        
         parsedResult = JSON.parse(jsonString);
         
-        if (!parsedResult.summary || !Array.isArray(parsedResult.keyPoints)) {
+        // Vérifier que le résultat a la structure attendue
+        if (!parsedResult.summary && !parsedResult.mainIntention) {
           throw new Error("Structure de réponse invalide");
         }
       } catch (parseError) {

@@ -295,10 +295,10 @@ export const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
             removeFile={removeFile}
           />
 
-          {/* Sélecteur de mode d'analyse */}
-          <div className="pt-2 pb-2 border-t border-[#0F766E]/10">
-            <div className="flex flex-col gap-2">
-              <span className="text-[#0F766E]/80 text-[11px] font-medium">Mode d'analyse :</span>
+          {/* Sélecteur de mode d'analyse - STICKY */}
+          <div className="pt-2 pb-2 border-t border-[#0F766E]/10 sticky top-0 bg-white z-10">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+              <span className="text-[#0F766E]/80 text-[11px] font-medium shrink-0">Mode d'analyse :</span>
               <AnalysisModeSelector 
                 selectedMode={analysisMode}
                 onSelectMode={setAnalysisMode}
